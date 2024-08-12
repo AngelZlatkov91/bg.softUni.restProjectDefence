@@ -1,16 +1,20 @@
 package bg.softuni.exam.healthNutrition.Rest.model.DTO;
 
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 public class ProductCreateDTO  {
 
+    @NotBlank
     private String name;
-
+    @NotBlank
     private String description;
-
+    @NotBlank
+    private String imageUrl;
+    @Positive
     private Double price;
-
+    @NotBlank
     private String type;
-
+    @NotBlank
     private String brand;
 
     public ProductCreateDTO(){
@@ -54,6 +58,11 @@ public class ProductCreateDTO  {
         this.brand = brand;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

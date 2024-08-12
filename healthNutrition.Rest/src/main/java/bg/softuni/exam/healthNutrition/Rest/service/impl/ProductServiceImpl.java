@@ -5,7 +5,6 @@ import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.entity.Product;
 import bg.softuni.exam.healthNutrition.Rest.repository.ProductRepository;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,18 +14,21 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final ModelMapper mapper;
 
 
 
-    public ProductServiceImpl(ProductRepository productRepository, ModelMapper mapper) {
+
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.mapper = mapper;
+
     }
 
     @Override
     // add product
     public Long addProduct(ProductCreateDTO productCreateDTO){
+        if (productRepository.findByName(productCreateDTO.getName()).isPresent()) {
+            throw new IllegalArgumentException("Name is already exist!");
+        }
         Product save = this.productRepository.save(map(productCreateDTO));
         return save.getId();
     }
@@ -72,13 +74,21 @@ public class ProductServiceImpl implements ProductService {
         productDetailsDTO.setPrice(product.getPrice());
         productDetailsDTO.setType(product.getType());
         productDetailsDTO.setBrand(product.getBrand());
+        productDetailsDTO.setImageUrl(product.getImageUrl());
         return  productDetailsDTO;
     }
 
 
     // create product from ProductCreateDTO
     private Product map(ProductCreateDTO productCreateDTO) {
-            return this.mapper.map(productCreateDTO,Product.class);
+        Product product = new Product();
+        product.setName(productCreateDTO.getName());
+        product.setDescription(productCreateDTO.getDescription());
+        product.setImageUrl(productCreateDTO.getImageUrl());
+        product.setPrice(productCreateDTO.getPrice());
+        product.setType(productCreateDTO.getType());
+        product.setBrand(productCreateDTO.getBrand());
+            return product;
     }
 
 

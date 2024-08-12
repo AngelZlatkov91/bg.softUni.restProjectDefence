@@ -1,5 +1,4 @@
 package bg.softuni.exam.healthNutrition.Rest.config;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +14,5 @@ public class AppConfig {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
-    @Bean
-    public ModelMapper modelMapper(){
-        return new ModelMapper();
-    }
+
 }

@@ -1,18 +1,15 @@
 package bg.softuni.exam.healthNutrition.Rest.web;
-
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductCreateDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/products/")
+@RequestMapping("/api/products")
 public class RestControllerGetProducts {
     // very simple rest controller  to do more specific
            // TODO
@@ -62,6 +59,7 @@ public class RestControllerGetProducts {
     public ResponseEntity<List<ProductDetailsDTO>> searchBy(@PathVariable("searchKey") String searchKey) {
         return ResponseEntity.ok(productService.getProductsByKey(searchKey));
     }
+
 
 
 }

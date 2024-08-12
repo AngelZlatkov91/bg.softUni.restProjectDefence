@@ -7,7 +7,7 @@ function loadProducts() {
     let productsContainer = document.getElementById('products-container');
     productsContainer.innerHTML = ''
 
-    fetch('http://localhost:8080/api/products')
+    fetch('http://localhost:8080/api/products/')
         .then(response => response.json())
         .then(json => json.forEach(product => {
 

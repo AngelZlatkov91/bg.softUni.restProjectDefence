@@ -14,6 +14,8 @@ public class Product  {
     @Column(nullable = false)
     private Double price;
 
+    @Column(nullable = false)
+    private String imageUrl;
 
     @Column(nullable = false)
     private String type;
@@ -72,5 +74,13 @@ public class Product  {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

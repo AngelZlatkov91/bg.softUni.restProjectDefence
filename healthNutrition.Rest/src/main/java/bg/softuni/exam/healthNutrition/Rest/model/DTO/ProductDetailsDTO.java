@@ -3,8 +3,9 @@ public class ProductDetailsDTO {
     private Long id;
     private String name;
     private String description;
-    private Double price;
+    private String imageUrl;
 
+    private Double price;
     private String type;
     private String brand;
 
@@ -60,6 +61,13 @@ public class ProductDetailsDTO {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }
