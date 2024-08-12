@@ -124,27 +124,7 @@ class RestControllerGetProductsTest {
         ).andExpect(status().isNoContent());
         Assertions.assertEquals(0,productRepository.count());
     }
-    @Test
-    public void testSearchKeyByWordExist() throws Exception {
-        var actualEntity = createProduct();
-       mockMvc.perform(get("/api/products/search/{searchKey}","isolate")
-                       .param("searchKey","isolate")
-                       .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[?(@.name == '" + actualEntity.getName() + "')]").exists())
-                .andExpect(jsonPath("$[?(@.description == '" + actualEntity.getDescription() + "')]").exists())
-                .andExpect(jsonPath("$[?(@.price == '" + actualEntity.getPrice() + "')]").exists())
-                .andExpect(jsonPath("$[?(@.type == '" + actualEntity.getType() + "')]").exists())
-                .andExpect(jsonPath("$[?(@.brand == '" + actualEntity.getBrand() + "')]").exists());
-    }
-    @Test
-    public void testGetProductBySearchKey_notExist() throws Exception {
-        mockMvc.perform(get("/api/products/search/{searchKey}","isolate")
-                        .param("searchKey","isolate")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isEmpty());
-    }
+
 
     private Product createProduct(){
        Product product = new Product();

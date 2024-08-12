@@ -25,12 +25,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     // add product
-    public Long addProduct(ProductCreateDTO productCreateDTO){
+    public ProductDetailsDTO addProduct(ProductCreateDTO productCreateDTO){
+
         if (productRepository.findByName(productCreateDTO.getName()).isPresent()) {
             throw new IllegalArgumentException("Name is already exist!");
         }
         Product save = this.productRepository.save(map(productCreateDTO));
-        return save.getId();
+
+        return mapAsDetails(save);
     }
 
 
@@ -42,14 +44,6 @@ public class ProductServiceImpl implements ProductService {
                     .stream().map(ProductServiceImpl::mapAsDetails).collect(Collectors.toList());
     }
 
-    @Override
-    // get product by key
-    public List<ProductDetailsDTO> getProductsByKey(String searchKey) {
-        List<ProductDetailsDTO> collect = productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrTypeContainingIgnoreCase(
-                searchKey, searchKey, searchKey).stream().map(ProductServiceImpl::mapAsDetails).collect(Collectors.toList());
-        searchKey = "";
-        return collect;
-    }
 
     @Override
     // get product details with id
@@ -88,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productCreateDTO.getPrice());
         product.setType(productCreateDTO.getType());
         product.setBrand(productCreateDTO.getBrand());
-            return product;
+        return product;
     }
 
 

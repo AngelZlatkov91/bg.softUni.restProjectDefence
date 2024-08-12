@@ -33,13 +33,13 @@ class ProductServiceImplTest {
 
     @Test
     public void testAddProductCorrect(){
-        Long id = productService.addProduct(productCreateDTO());
-        Optional<Product> byId = productRepository.findById(id);
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
+        Optional<Product> byId = productRepository.findById(productDetailsDTO.getId());
         assertTrue(byId.isPresent());
     }
     @Test
     public void testAddProductWithExistName(){
-        Long id = productService.addProduct(productCreateDTO());
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
         assertThrows(IllegalArgumentException.class,() ->{
             productService.addProduct(productCreateDTO());
         });
@@ -47,32 +47,25 @@ class ProductServiceImplTest {
 
     @Test
     public void testGetAllProducts(){
-        Long id = productService.addProduct(productCreateDTO());
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
         List<ProductDetailsDTO> allProducts = productService.getAllProducts();
         assertEquals(1,allProducts.size());
     }
 
     @Test
     public void testGetProductById(){
-        Long id = productService.addProduct(productCreateDTO());
-        Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(id);
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
+        Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(productDetailsDTO.getId());
         assertEquals(productDetails.get().getName(),productCreateDTO().getName());
     }
 
     @Test
     public void testDeleteProduct(){
-        Long id = productService.addProduct(productCreateDTO());
-        productService.deleteProduct(id);
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
+        productService.deleteProduct(productDetailsDTO.getId());
         assertEquals(0,productRepository.count());
     }
 
-    @Test
-    public void testGetProductBySearchKey(){
-        Long id = productService.addProduct(productCreateDTO());
-        List<ProductDetailsDTO> isolate = productService.getProductsByKey("isolate");
-        assertEquals(1,isolate.size());
-        assertEquals(id,isolate.get(0).getId());
-    }
 
     private ProductCreateDTO productCreateDTO (){
         ProductCreateDTO productCreateDTO = new ProductCreateDTO();

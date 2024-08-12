@@ -4,7 +4,7 @@ import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class RestControllerGetProducts {
 
     // get all products permit all
     @GetMapping
-    public ResponseEntity<List<ProductDetailsDTO>> getAllOffers() {
+    public ResponseEntity<List<ProductDetailsDTO>> getAllProducts() {
         return ResponseEntity.ok(
                 productService.getAllProducts()
         );
@@ -30,6 +30,7 @@ public class RestControllerGetProducts {
     @GetMapping(value = "/get/{id}")
     public ResponseEntity<ProductDetailsDTO> getById(@PathVariable("id") Long id) {
        Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(id);
+
 
         return productDetails.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -45,20 +46,20 @@ public class RestControllerGetProducts {
     }
     // create product  permit only admin
     @PostMapping("/create")
-    public ResponseEntity<ProductCreateDTO> createOffer(
-            @RequestBody ProductCreateDTO productCreateDTO,
-            UriComponentsBuilder uriComponentsBuilder
+    public ResponseEntity<ProductDetailsDTO> createProduct(
+            @RequestBody ProductCreateDTO productCreateDTO
     ) {
-        Long id = this.productService.addProduct(productCreateDTO);
+        ProductDetailsDTO productDetailsDTO = this.productService.addProduct(productCreateDTO);
         return ResponseEntity.created(
-                uriComponentsBuilder.path("/api/product/{id}").build(id)
-        ).build();
+                ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                                .path("/{id}")
+                        .buildAndExpand(productDetailsDTO.getId())
+                        .toUri()
+        ).body(productDetailsDTO);
+
     }
-     // get products by key
-    @GetMapping("/search/{searchKey}")
-    public ResponseEntity<List<ProductDetailsDTO>> searchBy(@PathVariable("searchKey") String searchKey) {
-        return ResponseEntity.ok(productService.getProductsByKey(searchKey));
-    }
+
 
 
 
