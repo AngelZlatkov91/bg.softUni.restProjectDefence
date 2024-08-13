@@ -5,6 +5,7 @@ import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.entity.Product;
 import bg.softuni.exam.healthNutrition.Rest.repository.ProductRepository;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,14 +48,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     // get product details with id
-    public Optional<ProductDetailsDTO> getProductDetails(Long id) {
-        return  productRepository.findById(id).map(ProductServiceImpl::mapAsDetails);
+    public Optional<ProductDetailsDTO> getProductDetails(String name) {
+        return  productRepository.findByName(name).map(ProductServiceImpl::mapAsDetails);
     }
 
     @Override
+    @Transactional
     // delete product  with id
-    public void deleteProduct(Long id) {
-        this.productRepository.deleteById(id);
+    public void deleteProduct(String name) {
+        this.productRepository.deleteProductByName(name);
     }
 
 

@@ -55,14 +55,14 @@ class ProductServiceImplTest {
     @Test
     public void testGetProductById(){
         ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
-        Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(productDetailsDTO.getId());
+        Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(productDetailsDTO.getName());
         assertEquals(productDetails.get().getName(),productCreateDTO().getName());
     }
 
     @Test
     public void testDeleteProduct(){
         ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
-        productService.deleteProduct(productDetailsDTO.getId());
+        productService.deleteProduct(productDetailsDTO.getName());
         assertEquals(0,productRepository.count());
     }
 

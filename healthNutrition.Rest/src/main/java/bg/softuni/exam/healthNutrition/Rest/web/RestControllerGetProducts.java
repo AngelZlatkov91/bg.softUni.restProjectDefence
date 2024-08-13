@@ -27,19 +27,17 @@ public class RestControllerGetProducts {
         );
     }
     // get product by uuid permit all
-    @GetMapping(value = "/get/{id}")
-    public ResponseEntity<ProductDetailsDTO> getById(@PathVariable("id") Long id) {
-       Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(id);
-
-
+    @GetMapping(value = "/get/{name}")
+    public ResponseEntity<ProductDetailsDTO> getById(@PathVariable("name") String name) {
+       Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(name);
         return productDetails.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     // remove product by uuid permit only admin
 
-    @DeleteMapping("/remove/{id}")
-    public ResponseEntity<ProductDetailsDTO> deleteById(@PathVariable("id") Long id) {
-        productService.deleteProduct(id);
+    @DeleteMapping("/remove/{name}")
+    public ResponseEntity<ProductDetailsDTO> deleteById(@PathVariable("name") String name) {
+        productService.deleteProduct(name);
         return ResponseEntity
                 .noContent()
                 .build();

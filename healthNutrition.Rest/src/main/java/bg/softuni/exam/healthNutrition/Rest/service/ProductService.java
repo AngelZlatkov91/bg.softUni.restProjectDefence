@@ -12,9 +12,9 @@ public interface ProductService {
 
     List<ProductDetailsDTO> getAllProducts();
 
-    Optional<ProductDetailsDTO> getProductDetails(Long id);
+    Optional<ProductDetailsDTO> getProductDetails(String name);
 
-    void deleteProduct(Long id);
+    void deleteProduct(String name);
 
 
 }

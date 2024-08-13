@@ -44,7 +44,7 @@ class RestControllerGetProductsTest {
 
         // ACT
         ResultActions result = mockMvc
-                .perform(get("/api/products/get/{id}", actualEntity.getId())
+                .perform(get("/api/products/get/{name}", actualEntity.getName())
                         .contentType(MediaType.APPLICATION_JSON));
 
         // Assert
@@ -116,10 +116,10 @@ class RestControllerGetProductsTest {
     }
 
     @Test
-    public void testDeleteOffer() throws Exception {
+    public void testDeleteProduct() throws Exception {
         var actualEntity = createProduct();
 
-        mockMvc.perform(delete("/api/products/remove/{id}", actualEntity.getId())
+        mockMvc.perform(delete("/api/products/remove/{id}", actualEntity.getName())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent());
         Assertions.assertEquals(0,productRepository.count());
