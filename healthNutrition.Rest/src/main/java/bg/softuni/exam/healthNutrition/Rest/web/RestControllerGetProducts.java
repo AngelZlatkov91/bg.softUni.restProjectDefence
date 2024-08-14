@@ -57,6 +57,7 @@ public class RestControllerGetProducts {
                         .toUri()
         ).body(productDetailsDTO);
     }
+
     @PutMapping("/edit/price/{name}")
     public ResponseEntity<ProductDetailsDTO> editPrice(@PathVariable("name") String name,
                                                        @RequestBody ProductEditPrice productEditPrice) {
