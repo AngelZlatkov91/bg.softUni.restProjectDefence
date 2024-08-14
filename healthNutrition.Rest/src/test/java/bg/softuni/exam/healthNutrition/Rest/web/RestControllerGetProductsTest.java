@@ -1,12 +1,11 @@
 package bg.softuni.exam.healthNutrition.Rest.web;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import bg.softuni.exam.healthNutrition.Rest.model.entity.Product;
 import bg.softuni.exam.healthNutrition.Rest.repository.ProductRepository;
@@ -37,7 +36,7 @@ class RestControllerGetProductsTest {
         productRepository.deleteAll();
     }
     @Test
-    public void testGetByUUID() throws Exception {
+    public void testGetByName() throws Exception {
 
         // Arrange
         var actualEntity = createProduct();
@@ -66,7 +65,7 @@ class RestControllerGetProductsTest {
     @Test
     public void testCreateProduct() throws Exception {
         // Arrange
-        var actualEntity = createProduct();
+
 
         MvcResult result = mockMvc.perform(post("/api/products/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -123,6 +122,23 @@ class RestControllerGetProductsTest {
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent());
         Assertions.assertEquals(0,productRepository.count());
+    }
+
+    @Test
+    public void testUpdatePriceProduct() throws Exception {
+        var actualEntity = createProduct();
+
+        mockMvc.perform(put("/api/products/edit/price/{name}", actualEntity.getName())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                 {
+                    "price" : 55.00
+                 }
+                """)
+        ).andExpect(status().isOk());
+
+        Optional<Product> byName = productRepository.findByName("isolate");
+        assertEquals(55.00,byName.get().getPrice());
     }
 
 

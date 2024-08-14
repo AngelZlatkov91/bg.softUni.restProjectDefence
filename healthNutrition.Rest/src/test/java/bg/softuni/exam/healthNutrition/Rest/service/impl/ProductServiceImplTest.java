@@ -2,6 +2,7 @@ package bg.softuni.exam.healthNutrition.Rest.service.impl;
 
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductCreateDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
+import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductEditPrice;
 import bg.softuni.exam.healthNutrition.Rest.model.entity.Product;
 import bg.softuni.exam.healthNutrition.Rest.repository.ProductRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -53,10 +54,16 @@ class ProductServiceImplTest {
     }
 
     @Test
-    public void testGetProductById(){
+    public void testGetProductByName(){
         ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
         Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(productDetailsDTO.getName());
         assertEquals(productDetails.get().getName(),productCreateDTO().getName());
+    }
+    @Test
+    public void testGetProductByName_notExist(){
+        assertThrows(IllegalArgumentException.class,() ->{
+            productService.getProductDetails(productCreateDTO().getName());
+        });
     }
 
     @Test
@@ -65,6 +72,32 @@ class ProductServiceImplTest {
         productService.deleteProduct(productDetailsDTO.getName());
         assertEquals(0,productRepository.count());
     }
+    @Test
+    public void testDeleteNotExistProduct(){
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
+        productService.deleteProduct("Protein");
+        assertEquals(1,productRepository.count());
+    }
+
+    @Test
+    public  void testUpdatePriceForProduct(){
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
+        ProductEditPrice productEditPrice = new ProductEditPrice();
+        productEditPrice.setPrice(55.00);
+        productService.editPrice("ISOLATE",productEditPrice);
+        Optional<ProductDetailsDTO> productDetails = productService.getProductDetails("ISOLATE");
+        assertEquals(55.00,productDetails.get().getPrice());
+    }
+    @Test
+    public void testUpdatePriceNotExistProduct(){
+        ProductEditPrice productEditPrice = new ProductEditPrice();
+        productEditPrice.setPrice(55.00);
+        assertThrows(IllegalArgumentException.class,() ->{
+            productService.editPrice("Protein",productEditPrice);
+        });
+    }
+
+
 
 
     private ProductCreateDTO productCreateDTO (){

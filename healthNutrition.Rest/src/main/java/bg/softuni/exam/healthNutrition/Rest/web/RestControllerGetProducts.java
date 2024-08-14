@@ -1,6 +1,7 @@
 package bg.softuni.exam.healthNutrition.Rest.web;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductCreateDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
+import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductEditPrice;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +56,13 @@ public class RestControllerGetProducts {
                         .buildAndExpand(productDetailsDTO.getId())
                         .toUri()
         ).body(productDetailsDTO);
-
+    }
+    @PutMapping("/edit/price/{name}")
+    public ResponseEntity<ProductDetailsDTO> editPrice(@PathVariable("name") String name,
+                                                       @RequestBody ProductEditPrice productEditPrice) {
+        Optional<ProductDetailsDTO> productDetailsDTO = this.productService.editPrice(name,productEditPrice);
+      return productDetailsDTO.map(ResponseEntity::ok)
+              .orElse(ResponseEntity.notFound().build());
     }
 
 

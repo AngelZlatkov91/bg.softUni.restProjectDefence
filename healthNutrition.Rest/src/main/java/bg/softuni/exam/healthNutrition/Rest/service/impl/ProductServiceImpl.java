@@ -2,6 +2,7 @@ package bg.softuni.exam.healthNutrition.Rest.service.impl;
 
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductCreateDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
+import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductEditPrice;
 import bg.softuni.exam.healthNutrition.Rest.model.entity.Product;
 import bg.softuni.exam.healthNutrition.Rest.repository.ProductRepository;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
@@ -49,6 +50,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     // get product details with id
     public Optional<ProductDetailsDTO> getProductDetails(String name) {
+        Optional<Product> byName = productRepository.findByName(name);
+        if (byName.isEmpty()) {
+            throw new IllegalArgumentException("Product is not exist");
+        }
         return  productRepository.findByName(name).map(ProductServiceImpl::mapAsDetails);
     }
 
@@ -59,9 +64,20 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository.deleteProductByName(name);
     }
 
+    @Override
+    // edit product price
+    public Optional<ProductDetailsDTO> editPrice(String name, ProductEditPrice productEditPrice) {
+        Optional<Product> byName = productRepository.findByName(name);
+        if (byName.isEmpty()) {
+            throw new IllegalArgumentException("Product is not exist");
+        }
+        byName.get().setPrice(productEditPrice.getPrice());
+        productRepository.save(byName.get());
+        return byName.map(ProductServiceImpl::mapAsDetails);
+    }
 
 
-        // map product entity to productDetailsDTO
+    // map product entity to productDetailsDTO
     private static ProductDetailsDTO mapAsDetails(Product product) {
         ProductDetailsDTO productDetailsDTO = new ProductDetailsDTO();
         productDetailsDTO.setId(product.getId());
