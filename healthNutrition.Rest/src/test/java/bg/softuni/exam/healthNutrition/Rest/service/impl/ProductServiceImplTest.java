@@ -3,6 +3,7 @@ package bg.softuni.exam.healthNutrition.Rest.service.impl;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductCreateDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductEditPrice;
+import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductInCartDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.entity.Product;
 import bg.softuni.exam.healthNutrition.Rest.repository.ProductRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -94,6 +95,20 @@ class ProductServiceImplTest {
         productEditPrice.setPrice(55.00);
         assertThrows(IllegalArgumentException.class,() ->{
             productService.editPrice("Protein",productEditPrice);
+        });
+    }
+
+    @Test
+    public void testGetProductForCart(){
+        ProductDetailsDTO productDetailsDTO = productService.addProduct(productCreateDTO());
+        ProductInCartDTO product = productService.productInCart("ISOLATE");
+        assertEquals(product.getName(),productDetailsDTO.getName());
+        assertEquals(1,product.getQuantity());
+    }
+    @Test
+    public void testAddProductToCart_NotExistProduct(){
+        assertThrows(IllegalArgumentException.class,() ->{
+            productService.productInCart("test");
         });
     }
 

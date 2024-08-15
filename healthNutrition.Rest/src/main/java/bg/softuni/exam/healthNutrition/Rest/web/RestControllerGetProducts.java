@@ -2,6 +2,7 @@ package bg.softuni.exam.healthNutrition.Rest.web;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductCreateDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductEditPrice;
+import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductInCartDTO;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class RestControllerGetProducts {
     }
     // get product by uuid permit all
     @GetMapping(value = "/get/{name}")
-    public ResponseEntity<ProductDetailsDTO> getById(@PathVariable("name") String name) {
+    public ResponseEntity<ProductDetailsDTO> getByName(@PathVariable("name") String name) {
        Optional<ProductDetailsDTO> productDetails = productService.getProductDetails(name);
         return productDetails.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -65,8 +66,16 @@ public class RestControllerGetProducts {
       return productDetailsDTO.map(ResponseEntity::ok)
               .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping(value = "/search/{searchKey}")
+    public ResponseEntity<List<ProductDetailsDTO>> getBySearchKey(@PathVariable("searchKey") String searchKey) {
+        List<ProductDetailsDTO> productsBySearchKey = productService.getProductsBySearchKey(searchKey);
+        return ResponseEntity.ok(productsBySearchKey);
+    }
 
-
-
+    @GetMapping(value = "/cart/{name}")
+    public ResponseEntity<ProductInCartDTO> getByNameForCart(@PathVariable("name") String name) {
+        ProductInCartDTO product = productService.productInCart(name);
+        return ResponseEntity.ok(product);
+    }
 
 }

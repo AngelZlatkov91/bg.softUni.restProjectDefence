@@ -113,12 +113,44 @@ class RestControllerGetProductsTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
+    @Test
+    public void testGetProductBySearchKeyNotExist() throws Exception {
+        var actualEntity = createProduct();
+        mockMvc.perform(get("/api/products/search/{searchKey}","test")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+    @Test
+    public void testGetProductBySearchKeyBrand() throws Exception {
+        var actualEntity = createProduct();
+        mockMvc.perform(get("/api/products/search/{searchKey}",actualEntity.getBrand())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.name == '" + actualEntity.getName() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.description == '" + actualEntity.getDescription() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.price == '" + actualEntity.getPrice() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.type == '" + actualEntity.getType() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.brand == '" + actualEntity.getBrand() + "')]").exists());
+    }
+    @Test
+    public void testGetProductBySearchKeyType() throws Exception {
+        var actualEntity = createProduct();
+        mockMvc.perform(get("/api/products/search/{searchKey}",actualEntity.getType())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.name == '" + actualEntity.getName() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.description == '" + actualEntity.getDescription() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.price == '" + actualEntity.getPrice() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.type == '" + actualEntity.getType() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.brand == '" + actualEntity.getBrand() + "')]").exists());
+    }
 
     @Test
     public void testDeleteProduct() throws Exception {
         var actualEntity = createProduct();
 
-        mockMvc.perform(delete("/api/products/remove/{id}", actualEntity.getName())
+        mockMvc.perform(delete("/api/products/remove/{name}", actualEntity.getName())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent());
         Assertions.assertEquals(0,productRepository.count());
@@ -139,6 +171,23 @@ class RestControllerGetProductsTest {
 
         Optional<Product> byName = productRepository.findByName("isolate");
         assertEquals(55.00,byName.get().getPrice());
+    }
+
+    @Test
+    public void testAddProductToCart() throws Exception {
+        var actualEntity = createProduct();
+        mockMvc.perform(get("/api/products/cart/{name}",actualEntity.getName())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.name == '" + actualEntity.getName() + "')]").exists())
+                .andExpect(jsonPath("$[?(@.price == '" + actualEntity.getPrice() + "')]").exists());
+    }
+
+    @Test
+    public void testAddProductToCart_NotExist() throws Exception {
+        mockMvc.perform(get("/api/products/cart/{name}","test")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 

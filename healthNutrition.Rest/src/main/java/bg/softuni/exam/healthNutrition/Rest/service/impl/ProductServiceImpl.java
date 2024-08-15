@@ -1,14 +1,13 @@
 package bg.softuni.exam.healthNutrition.Rest.service.impl;
-
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductCreateDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductDetailsDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductEditPrice;
+import bg.softuni.exam.healthNutrition.Rest.model.DTO.ProductInCartDTO;
 import bg.softuni.exam.healthNutrition.Rest.model.entity.Product;
 import bg.softuni.exam.healthNutrition.Rest.repository.ProductRepository;
 import bg.softuni.exam.healthNutrition.Rest.service.ProductService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-
 
 
 
@@ -65,6 +63,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDetailsDTO> getProductsBySearchKey(String searchKey) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrTypeContainingIgnoreCase(searchKey,searchKey,searchKey);
+        return products.stream().map(ProductServiceImpl::mapAsDetails).collect(Collectors.toList());
+    }
+
+    @Override
     // edit product price
     public Optional<ProductDetailsDTO> editPrice(String name, ProductEditPrice productEditPrice) {
         Optional<Product> byName = productRepository.findByName(name);
@@ -74,6 +78,19 @@ public class ProductServiceImpl implements ProductService {
         byName.get().setPrice(productEditPrice.getPrice());
         productRepository.save(byName.get());
         return byName.map(ProductServiceImpl::mapAsDetails);
+    }
+     // add product in cart
+    @Override
+    public ProductInCartDTO productInCart(String name) {
+        Optional<Product> byName = productRepository.findByName(name);
+        if (byName.isEmpty()) {
+            throw new IllegalArgumentException("Product is not exist");
+        }
+        ProductInCartDTO product = new ProductInCartDTO();
+        product.setName(byName.get().getName());
+        product.setPrice(byName.get().getPrice());
+        product.increaseQuantity();
+        return product;
     }
 
 

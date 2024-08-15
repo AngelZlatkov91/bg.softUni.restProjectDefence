@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -57,6 +58,27 @@ class ProductRepositoryTest {
     public void testDeleteByID(){
         productRepository.deleteById(product.getId());
         assertEquals(0,productRepository.count());
+    }
+    
+    @Test
+    public void testGetProductBySearchKeyByBrand(){
+        List<Product> byKey = productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrTypeContainingIgnoreCase("AMIX", "AMIX", "AMIX");
+       assertEquals(1,byKey.size());
+    }
+    @Test
+    public void testGetProductBySearchKeyByType(){
+        List<Product> byKey = productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrTypeContainingIgnoreCase("SPORT", "SPORT", "SPORT");
+        assertEquals(1,byKey.size());
+    }
+    @Test
+    public void testGetProductBySearchKeyByName(){
+        List<Product> byKey = productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrTypeContainingIgnoreCase("isolate", "isolate", "isolate");
+        assertEquals(1,byKey.size());
+    }
+    @Test
+    public void testGetProductBySearchKeyNotContains(){
+        List<Product> byKey = productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrTypeContainingIgnoreCase("test", "test", "test");
+        assertEquals(0,byKey.size());
     }
 
 }

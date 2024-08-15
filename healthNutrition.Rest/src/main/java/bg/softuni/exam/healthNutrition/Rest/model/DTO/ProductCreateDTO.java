@@ -1,10 +1,10 @@
 package bg.softuni.exam.healthNutrition.Rest.model.DTO;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 public class ProductCreateDTO  {
 
     @NotBlank
+
     private String name;
     @NotBlank
     private String description;
